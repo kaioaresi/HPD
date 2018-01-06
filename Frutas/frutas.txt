@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Morango
 Pêra
 Maça
@@ -19,3 +20,10 @@ Blueberry
 Groselha
 Framboesa
 >>>>>>> Frutas_vermelhas
+=======
+Banana
+Melão
+Caju
+Abacaxi
+Pêra
+>>>>>>> Frutas_amarelas
