@@ -1,0 +1,7 @@
+---
+- hosts:
+
+  - name: "Instalando nginx"
+    yum:
+        name: nginx
+        state: present
