@@ -171,14 +171,129 @@ Agora vamos bindar um diretorio
 # Criando uma imagem
 
 
+**Criando um dockerfile**
+```docker
+  mkdir dockerfiles
+  vim Dockerfile # o nome deve ser desta maneira
+
+      FROM ubuntu # qual imagem será utilizada
+      MAINTAINER KAIO ARESI # quem criou a imagem
+      RUN apt-get update ; apt-get install -y ngin ; apt-get clean # quais comandos serão executados no momento da criação da imagem
+      COPY index.html /var/www/html/ # irá copiar o index.html do diretorio local para dentro do container
+      ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
+      EXPOSE 80 # para disponibilizar a porta
+```
+
+Agora vamos criar o index.html
+```html
+  <h1>Meu primeiro Dockerfile</h1>
+```
+
+Agora vamos criar a imagem
+```docker
+  docker build -t <tag> <diretorio do Dockerfile>
+  docker build -t ubunto_nginx:1.0 .
+```
+
+**Treino Dockerfile**
+
+```docker
+    FROM centos:7
+    MAINTAINER KAIO ARESI (kaioaresi@gmail.com)
+    RUN yum install -y epel-release ; yum install -y nginx ; yum clean all
+    COPY index2.html /var/www/html/
+    ENTRYPOINT ['/usr/sbin/nginx', '-g', 'daemon off;']
+    EXPOSE 80
+```
+
+
+**Docker login**
+
+```docker
+  docker login
+```
+
+Para subir uma image para o dockerhub, você deve primeiro colocar o nome da image no formato correto.
+
+**1º passo**
+Renomeando uma image para o padrão dockerhub
+```docker
+  docker tag <image id> <nome usuário>/<nome img>:<versão>
+  docker tag 5a54b0b48c76 kaioaresi/ubuntu_nginx_k:1.0
+```
+
+**2º passo**
+Subindo uma imagem para o dockerhub
+```docker
+  docker push kaioaresi/ubuntu_nginx_k:1.0
+```
+
+#### Criando um Dockerfile multi stage
+
+**1º passo**
+
+
+```docker
+
+  FROM golang:alpine
+  WORKDIR /app # quando o container subir qual diretorio ele irá trabalhar
+  ADD ./app
+  RUN go build -o opa
+  ENTRYPOINT ./opa
+```
+
+Agora crie um arquivo em GO no mesmo diretorio
+```go
+  package main
+
+  import "fmt"
+
+  func main()  {
+    fmt.Println("Teste app docker")
+  }
+```
+
+
+#### Agora o multi
+
+```docker
+FROM golang:alpine AS buildando
+ADD . /src
+WORKDIR /src
+RUN go build -o opa
+
+FROM alpine
+WORKDIR /app
+COPY --from=buildando /src/opa /app
+ENTRYPOINT ./opa
+
+```
+#### Historico das imagens
+
+```docker
+  docker image history <image id>
+```
 
 
 
+#### Limitando consumo de um container
+
+Para limitar a quantidade máxima de recursos que um container pode consumir.
+
+```docker
+  docker container run -d -p 8080:80 --memory 128M kaioaresi/centos_nginx_k:1.0
+```
 
 
+```docker
+  docker container run -d -p 8081:80 --cpus 0.2 kaioaresi/centos_nginx_k:1.0
+```
 
+Como verificar a utilização de recursos do containers
 
-
+```docker
+  docker container stats <container id>
+```
 
 
 
