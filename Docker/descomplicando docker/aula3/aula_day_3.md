@@ -101,19 +101,78 @@
   docker service inspect <nome do serviço>
 ```
 
+7. Update de informações do serviço
+
+
+O update é realizado porém o serviço continua up
+```
+  docker service update --publish-add 9091:80 <nome do serviço> # adiciona uma nova porta
+  docker service update --publish-rm 9091:80 <nome do serviço> # remove uma porta
+```
+
 ---
 
-# Network
+## Network
 1. Criando um rede
 
 ```
   docker network create --driver overlay <nome da rede>
   docker network create --driver overlay aresi
 ```
+
 1.1 Como usar a rede
 ```
   docker service create --name web -p 8080:80 --network aresi nginx
 ```
+
+
+
+
+
+---
+
+# Docker machine
+
+## Instalando docker-machine
+
+```
+base=https://github.com/docker/machine/releases/download/v0.14.0 &&
+  sudo curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+```
+
+1. Criando uma docker-machine
+
+```
+  docker-machine create --driver virtualbox <nome da machina>
+  docker-machine create --driver virtualbox dockermachine01
+
+```
+> a logica de listagem, remoção é a mesma logica https://docs.docker.com/machine/reference/
+
+2. Exportando váriaveis de ambiente para dentro do vm docker
+
+```
+  eval $(docker-machine env <nome da sua docker machine>)
+
+```
+
+3. Logando na docker machine
+
+```
+  docker-machine ssh <nome da machine>
+```
+
+4. Saindo da env docker machine
+
+```
+  unset eval
+```
+
+
+# Criando um arquivo Compose
+
+1.
 
 
 

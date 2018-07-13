@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  prometheus_server:
+    image: prom/prometheus
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.9"
+          memory: 2048m
+      restart_policy:
+          condition: on-failure
+    ports:
+      - "19090:9090"
+    networks:
+      - webservice
+networks:
+  webservice:
