@@ -1,0 +1,8 @@
+version: "3.3"
+services:
+  web:
+    image: nginx
+    deploy:
+      mode: global
+    ports:
+      - "80:80"
