@@ -1,0 +1,37 @@
+groups:
+- name: Service Metrics
+  rules:
+
+  - alert: task_high_cpu_usage
+    expr: sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_task_name=~".+"}[1m]))
+      BY (container_label_com_docker_swarm_task_name, container_label_com_docker_swarm_node_id)
+      * 100 > 50
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: '{{ $labels.container_label_com_docker_swarm_task_name }} on ''{{
+        $labels.container_label_com_docker_swarm_node_id }}'' CPU usage is at {{ humanize
+        $value}}%.'
+      summary: CPU alert for Swarm task '{{ $labels.container_label_com_docker_swarm_task_name
+        }}' on '{{ $labels.container_label_com_docker_swarm_node_id }}'
+
+  # Alert for any instance that is unreachable for >5 minutes.
+  - alert: service_down
+    expr: up == 0
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
+
+  # Alert for any instance that has a median request latency >1s.
+  - alert: APIHighRequestLatency
+    expr: api_http_request_latencies_second{quantile="0.5"} > 1
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High request latency on {{ $labels.instance }}"
+      description: "{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)"

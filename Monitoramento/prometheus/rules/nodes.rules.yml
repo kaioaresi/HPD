@@ -1,0 +1,50 @@
+groups:
+- name: "Node Metrics"
+  rules:
+
+  - alert: node_cpu_usage
+    expr: 100 - (avg(irate(node_cpu{mode="idle"}[1m]) * ON(instance) GROUP_LEFT(node_name)
+      node_meta * 100) BY (node_name)) > 80
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: Swarm node {{ $labels.node_name }} CPU usage is at {{ humanize $value}}%.
+      summary: CPU alert for Swarm node '{{ $labels.node_name }}'
+
+  - alert: node_memory_usage
+    expr: sum(node_memory_MemTotal_bytes) - sum(node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / (sum(node_memory_MemTotal_bytes) * 100) > 80
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      description: "Docker host memory usage is {{ humanize $value}}%. Reported by instance {{ $labels.instance }} of job {{ $labels.job }}."
+      summary: "Memory is almost full, please go check it."
+
+  - alert: node_storage
+    expr: (node_filesystem_size_bytes{fstype="ext4"} - node_filesystem_free_bytes{fstype="ext4"}) / node_filesystem_size_bytes{fstype="ext4"}  * 100 > 10
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Server storage is almost full"
+      description: "Host storage usage is {{ humanize $value}}%. Reported by instance {{ $labels.instance }} of job {{ $labels.job }}."
+
+  - alert: node_disk_usage
+    expr: ((node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_files_free{mountpoint="/"}) * 100 / node_filesystem_size_bytes{mountpoint="/"}) * ON(instance) GROUP_LEFT(node_name) node_meta > 90
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: Swarm node {{ $labels.node_name }} disk usage is at {{ humanize $value}}%.
+      summary: Disk alert for Swarm node '{{ $labels.node_name }}'
+
+
+  - alert: high_load
+    expr: node_load1 > 0.5
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} under high load"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."

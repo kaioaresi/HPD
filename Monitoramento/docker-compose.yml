@@ -1,0 +1,134 @@
+version: '3.6'
+
+networks:
+  monitoramento:
+    driver: overlay
+    attachable: true
+
+volumes:
+  prometheus: {}
+  grafana: {}
+  alertmanager: {}
+  rocket_uploads: {}
+
+services:
+  prometheus:
+    image: kaioaresi/prometheus:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "19090:9090"
+    networks:
+      - monitoramento
+    volumes:
+      - prometheus:/etc/prometheus
+
+  alertmanager:
+    image: kaioaresi/alertmanager:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "19093:9093"
+    networks:
+      - monitoramento
+    depends_on:
+      - prometheus
+    volumes:
+      - alertmanager:/alertmanager
+
+  cadvisor:
+    image: google/cadvisor:v0.28.5
+    hostname: '{{.Node.ID}}'
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+    networks:
+      - monitoramento
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "18080:8080"
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: prom/node-exporter:v0.16.0
+    hostname: '{{.Node.ID}}'
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "19100:9100"
+    networks:
+      - monitoramento
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: kaioaresi/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-trocar}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel,camptocamp-prometheus-alertmanager-datasource,vonage-status-panel
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "13000:3000"
+    networks:
+      - monitoramento
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana:/var/lib/grafana
+
+# If you already has a RocketChat instance running, just comment the code of rocketchat, mongo and mongo-init-replica services bellow
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - rocket_uploads:/app/uploads
+    environment:
+      - PORT=3080
+#      - ROOT_URL=http://YOUR_IP:3080
+#      - MONGO_URL=mongodb://mongo:27017/rocketchat
+#      - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+#      - MAIL_URL=smtp://user:pass@smtp.email
+#      - HTTP_PROXY=http://proxy.domain.com
+#      - HTTPS_PROXY=http://proxy.domain.com
+    depends_on:
+      - mongo
+    ports:
+      - 3080:3080

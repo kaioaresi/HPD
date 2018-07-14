@@ -1,0 +1,29 @@
+global:
+  resolve_timeout: 5m
+
+route:
+   group_by: ['cluster', 'alertname','service']
+   group_wait: 30s
+   group_interval: 5m
+   repeat_interval: 1h
+   # If an alert isn't caught by a route, send it slack.
+   receiver: slack_padrao
+   routes:
+    # Send service=web alerts to slack.
+    - match_re:
+        service: 'web'
+        receiver: 'rocketchat'
+
+receivers:
+  - name: 'slack_padrao'
+    slack_configs:
+#      - send_resolved: true
+#        username: alertmanager
+#        channel: '#canal'
+#        slack_api_url: https://hooks.slack.com/services/123123jalskdjals
+
+
+  - name: 'rocketchat'
+    webhook_configs:
+#        - send_resolved: false
+#          url: '${WEBHOOK_URL}'
