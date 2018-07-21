@@ -1,0 +1,43 @@
+version: "3.6"
+
+services:
+
+    mongo:
+      image: mongo:4
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
+
+    elasticsearch:
+      image: elasticsearch:5.6.10
+      environment:
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "http.host=0.0.0.0"
+        - "xpack.security.enabled=false"
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            memory: 1G
+
+    graylog:
+      image: graylog/graylog:2.4
+      environment:
+        - "GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api"
+      links:
+        - mongo
+        - elasticsearch
+      depends_on:
+        - mongo
+        - elasticsearch
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
+      ports:
+        - 9000:9000
+        - 12201:12201
+        - 514:514
