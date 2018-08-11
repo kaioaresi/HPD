@@ -44,7 +44,7 @@ service:
       deploy:
           replicas: 2
           resources:
-              cpu: "0.1"
+              cpus: "0.1"
               memory: 50m
           restart_policy:
               condition: on-failure
@@ -64,6 +64,17 @@ Existem duas opções
   docker stack deploy -c docker-compose.yml <mesmo nome do serviço>
 ```
 
+```
+version: '3.6'
+service:
+  servidor_web:
+    image: nginx
+    deploy:
+      mode: global
+      restart_policy: on-failure
+    ports:
+      - 80:80
+```
 3.2
 
 
