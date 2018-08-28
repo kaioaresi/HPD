@@ -1,4 +1,4 @@
-# É uma ferramenta de automatização
+# É uma ferramenta de orguestração
 > https://jenkins.io/
 
 ## Instalando jenkins
@@ -19,3 +19,33 @@ tailf /var/log/jenkins/jenkins.logs
 http://<servidor>:8080
   cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
+
+## jenkins executado docker
+
+```
+  # instale o docker
+    curl -fsSl https://get.docker.com | bash
+  # habilitando bash do jenkins
+    usermod -s /bin/bash jenkins
+    usermod -aG docker jenkins
+    systemctl restart jenkins
+```
+
+## Plugins
+> https://plugins.jenkins.io/
+
+1. Blue ocean
+2. Dashboards
+3. Build Monitor view
+4. Monitoring
+
+
+## Themas
+
+1. http://afonsof.com/jenkins-material-theme/
+2. https://tobix.github.io/jenkins-neo2-theme/
+3. https://github.com/rackerlabs/canon-jenkins
+
+
+# Performance
+> https://jenkins.io/blog/2016/11/21/gc-tuning/
