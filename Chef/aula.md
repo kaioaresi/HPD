@@ -248,19 +248,30 @@ end
 
 #### Escrevento arquivo attribute
 
-# Declarando variavel attribute
+##### Declarando variavel attribute
 
 ```
 node.default['item1'] = 'Centos'
 node.default['item2'] = 'Debian'
 ```
 
-# No arquivo o Arquivo
+##### No arquivo o Arquivo
+
 ```
 <% if node['platform'] == "centos" %>
   Ola, Seja bem vindo !!! você está utilizando um <%= node['item1'] %>
 <% else %>
   Ola, Seja bem vindo !!! você está utilizando um <%= node['item2'] %>
 <% end %>
+```
+
+## Execute para executar scripts
 
 ```
+execute 'apache_configtest' do
+  command '/usr/sbin/apachectl configtest'
+end
+```
+
+
+#
