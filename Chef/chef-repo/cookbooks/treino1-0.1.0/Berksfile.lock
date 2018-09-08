@@ -1,0 +1,17 @@
+DEPENDENCIES
+  chef-client (~> 11.0.0)
+  java_se (~> 10.0.2)
+  treino1
+    path: .
+    metadata: true
+
+GRAPH
+  chef-client (11.0.0)
+    cron (>= 4.2.0)
+    logrotate (>= 1.9.0)
+  cron (6.2.1)
+  java_se (10.0.2)
+  logrotate (2.2.0)
+  treino1 (0.3.0)
+    chef-client (~> 11.0.0)
+    java_se (~> 10.0.2)

@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+source 'https://supermarket.chef.io'
+
+metadata
+cookbook 'sudo', '~> 5.4.2'
+cookbook 'system', '~> 0.11.3'
