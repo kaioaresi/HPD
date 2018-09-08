@@ -467,11 +467,18 @@ Agora vamos executar uma receita no node remoto
 
   # Obs: O menos `-a` é para ele conectar usando o ip e não o hostname
 
-  knife ssh 'name:lab_chef_client' "chef-client -r 'recipe[treino1]'" -x root -p 22890 -P '52106253' -a ipaddress
+  knife ssh 'name:lab_chef_client' "chef-client -r 'recipe[treino1]'" -x root -p 22890 -P '123' -a ipaddress
 ```
 
 
+#### Criando enviriment
 
+```
+  export EDITOR=vim
+  knife environment create
+  # Recriando o node add environment e runlist em perguntar
+  knife bootstrap 192.168.1.11 -N cobaia_chef_client -x root -p 22 -P '123' -E prod -r 'recipe[treino1]' -y
+```
 
 
 
