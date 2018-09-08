@@ -480,15 +480,94 @@ Agora vamos executar uma receita no node remoto
   knife bootstrap 192.168.1.11 -N cobaia_chef_client -x root -p 22 -P '123' -E prod -r 'recipe[treino1]' -y
 ```
 
+```
+if node.chef_environment == "prod"
+  file '/usr/share/nginx/html/index.html' do
+    content '<h1>Instalado via chef</h1>'
+    content '<h2>Ambiente de produção</h2>'
+  end
+end
+```
+
+#### Depedencias de cookbook
+
+> https://supermarket.chef.io/
+
+Você define depedencias no arquivo dentro do seu projeto chamado `Berksfile` se não existir crie
+
+##### Berksfile
+```
+source 'https://supermarket.chef.io/'
+
+metadata
+<depedencias>
+```
+
+Agora vamos definir que as depedencias devem ser importadas
+
+##### metadata.rb
+```
+  depends 'java_se', '~> 10.0.2'
+```
+
+#### Usando o Berks
+
+```
+  cd <dir do cookbook>
+  berks install
+  berks upload # para subir para chef-server as depedencias baixadas anteriormente
+```
+
+#### Mantendo stado (a prova de mãozada)
+
+> Essa receita permite
+Berksfile
+```
+  cookbook 'chef-client', '~> 11.0.0'
+```
+
+Metadata.rb
+```
+  depends 'chef-client', '~> 11.0.0'  
+```
+Instalando a depedencia
+
+```
+  berks install
+  berks upload
+```
+
+#### Incluindo depedencia no meu cookbook
+
+```
+  include_recipe "chef-client::config"
+```
+
+Agora vamos Personalizar de quanto em quanto tempo o chef-server vai executar o runlist nos hosts
+
+```
+    chef generate attribute cookbooks/treino1 default
+    vim cookbooks/treino1-0.1.0/attributes/default.rb
+      node.default['chef_client']['interval'] = 3600
+```
+
+---
 
 
+# Configurando o `Ruim Windows`
 
+No prompt do windows
 
+```
+  winrm quickconfig
+    Y
+```
 
+Agora no knide host
 
-
-
-
+```
+  knife bootstrap windows winrm <ip do host> -N <nome> -x <user> -P <password>
+```
 
 
 #
