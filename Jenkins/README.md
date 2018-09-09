@@ -4,6 +4,8 @@
 * Blue Ocean
 * Dashboard View
 * Build Monitor View
+* Simple Theme (https://plugins.jenkins.io/simple-theme-plugin)
+
 
 #### Dicas para melhor o Jenkins
 https://jenkins.io/blog/2016/11/21/gc-tuning/
