@@ -57,7 +57,18 @@ def remove():
     # remove todos container com portas baixa
     list_contianers = client.containers.list(all)
     for container in list_contianers:
-        container_port = container.attrs['HostConfig']['PortBindings']
+        container_port = container.attrs['HostConfig']['PortBindings']['80/tcp'][0]['HostPort']
+        container_id = container.short_id
+        print(container_port)
+        if int(container_port) < 1024:
+            print('O container "{}" está usnado uma porta baixa {} e será removido'.format(container_id, container_port))
+            remove = container.remove(force=True)
+
+
+
+
+
+'''
         if isinstance(container_port, dict):
             for port_container, port_host in container_port.items():
                 port_host = str(port_host)
@@ -67,10 +78,10 @@ def remove():
                     remove = container.remove(force=True)
                 else:
                     print('Demais contianer estão usando portas altas.')
+'''
 
 
-
-
+'''
 subparser = parser.add_subparsers()
 
 # Containers: Run container
@@ -79,17 +90,17 @@ cria_container.add_argument('--image', required=True, help='Informe o nome da im
 cria_container.add_argument('--comando', required=True, help='Informe qual comando será executa detro no container.')
 cria_container.set_defaults(func=run_container)
 
-'''
+
 # List: lista containers
 lista = subparser.add_parser('list')
 lista.add_argument('--list', help='Lista todos containers')
 lista.set_defaults(func=list_container)
-'''
 
 
 # Realiza o tratamento dos arqumentos
 cmd = parser.parse_args()
 cmd.func(cmd)
+'''
 
 
 
@@ -106,5 +117,5 @@ print('==='*10)
 print('\nProcura image container\n')
 procura('Ubuntu')
 print('==='*10)
-remove()
 '''
+remove()
