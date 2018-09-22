@@ -1,0 +1,5 @@
+22/09/2018 13:20 	 Essa image não existe! 	 404 Client Error: Not Found ("pull access denied for nginxx, repository does not exist or may require 'docker login'") 
+22/09/2018 13:20 	 Essa image não existe! 	 404 Client Error: Not Found ("pull access denied for nginxx, repository does not exist or may require 'docker login'") 
+22/09/2018 13:21 	 Essa image não existe! 	 404 Client Error: Not Found ("pull access denied for nginxx, repository does not exist or may require 'docker login'") 
+22/09/2018 13:21 	 Essa image não existe! 	 404 Client Error: Not Found ("pull access denied for nginxx, repository does not exist or may require 'docker login'") 
+22/09/2018 13:21 	 Comando não existe! 	 400 Client Error: Bad Request ("OCI runtime create failed: container_linux.go:348: starting container process caused "exec: \"lss\": executable file not found in $PATH": unknown") 

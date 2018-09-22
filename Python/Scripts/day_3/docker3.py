@@ -2,22 +2,19 @@
 
 import docker
 import argparse
+from datetime import datetime
 
-
+# globais
 parser = argparse.ArgumentParser(description='Docker-cli HPD.')
-
 client = docker.from_env()
 
-'''
-def list_container():
-    containers = client.containers.list(all)
 
-    for container in containers:
-            container_name = container.attrs['Name']
-            container_img = container.attrs['Config']['Image']
-            container_cmd = container.attrs['Config']['Cmd']
-            print('O nome do container é "{}" está usando a image "{}" e o entrypoint é "{}"'.format(container_name, container_img, container_cmd))
-'''
+def logs(mensage, e, logfile='docker-cli.log'):
+    data_agora = datetime.now().strftime('%d/%m/%Y %H:%M')
+    with open('docker-cli.log', 'a') as log:
+        texto = "%s \t %s \t %s \n" % (data_agora, mensage, str(e))
+        log.write(texto)
+
 
 def list_container():
     containers = client.containers.list(all)
@@ -29,27 +26,17 @@ def list_container():
 
             print('O nome do container é "{}" está usando a image "{}" e o entrypoint é "{}"'.format(container_name, container_img, container_cmd))
 
-#old
+
 def run_container(args):
     try:
         executando = client.containers.run(args.image, args.comando)
         print(executando)
     except docker.errors.ImageNotFound as e:
         print('Essa image não existe ou não está publica!')
-
-
-
-'''
-def run_container(args):
-    try:
-        executando = client.containers.run(args.image, args.comando)
-        print(executando)
-    except docker.errors.ImageNotFound as im:
-        print('Essa image não existe não ou não é publica erro=> ', im)
-    except docker.errors.APIError as co:
-        print('Comando não encontrado =>', co)
-'''
-
+        logs("Essa image não existe!", e)
+    except docker.errors.APIError as e:
+        print('Comando não encontrado!')
+        logs("Comando não existe!", e)
 
 def procura(image):
     list_contianers = client.containers.list(all)
@@ -59,9 +46,6 @@ def procura(image):
         if image_container.lower() == image.lower():
             container_id = container.short_id
             print('Achei o container "{}" rodando com a image "{}"'.format(container_id, image_container))
-
-
-
 
 def remove():
     # remove todos container com portas baixa
@@ -73,7 +57,6 @@ def remove():
         if int(container_port) < 1024:
             print('O container "{}" está usnado uma porta baixa {} e será removido'.format(container_id, container_port))
             remove = container.remove(force=True)
-
 
 '''
         if isinstance(container_port, dict):
@@ -87,6 +70,7 @@ def remove():
                     print('Demais contianer estão usando portas altas.')
 '''
 
+
 subparser = parser.add_subparsers()
 
 # Containers: Run container
@@ -95,29 +79,11 @@ cria_container.add_argument('--image', required=True, help='Informe o nome da im
 cria_container.add_argument('--comando', required=True, help='Informe qual comando será executa detro no container.')
 cria_container.set_defaults(func=run_container)
 
-'''
 # List: lista containers
 lista = subparser.add_parser('list')
 lista.add_argument('--list', help='Lista todos containers')
 lista.set_defaults(func=list_container)
-'''
-
 
 # Realiza o tratamento dos arqumentos
 cmd = parser.parse_args()
 cmd.func(cmd)
-
-
-'''
-print('Run container\n')
-run_container('nginx', 'ls -lha')
-print('==='*10)
-print()
-print('Lista container\n')
-list_container()
-print('==='*10)
-print('\nProcura image container\n')
-procura('Ubuntu')
-print('==='*10)
-remove()
-'''
