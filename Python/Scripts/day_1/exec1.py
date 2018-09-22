@@ -11,7 +11,7 @@ def mk_dir():
     nome_dir()
     subprocess.call(['mkdir', dir])
     for i in range(1,40):
-        subprocess.call(['touch', str(i)], cwd=dir)
+        subprocess.call(['touch', str(i)+".txt"], cwd=dir)
 
 def list_dir():
     subprocess.call('ls -lh', cwd=dir, shell=True)
