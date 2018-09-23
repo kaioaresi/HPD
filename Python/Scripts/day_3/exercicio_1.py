@@ -27,7 +27,6 @@ def nome_astronautas():
         lista_nomes.append(nome)
         i += 1
 
-    print('Neste momento temos {} pessoas no espaço são eles : {}'.format(n_pessoas,lista_nomes))
+    return lista_nomes
 
-
-nome_astronautas()
+print(nome_astronautas())

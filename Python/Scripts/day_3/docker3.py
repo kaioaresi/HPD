@@ -3,6 +3,13 @@
 import docker
 import argparse
 from datetime import datetime
+import requests
+
+
+'''
+Exercicio final
+cliente.containers.run('nginx',name='kaio', detach=True)
+'''
 
 # globais
 parser = argparse.ArgumentParser(description='Docker-cli HPD.')
@@ -71,6 +78,42 @@ def remove():
 '''
 
 
+def nome_astronautas():
+
+    lista_nomes = []
+    url = "http://api.open-notify.org/astros.json"
+    resposta = requests.get(url)
+    saida_completa = resposta.json()
+
+    # Pegando o numero de astronautas
+    n_pessoas = saida_completa['number']
+
+    # Capturando dados astronautas
+    dados_people = saida_completa['people']
+
+    # Criando uma lista com os nomes dos astronautas
+    for i in range(0, n_pessoas):
+
+        nome = dados_people[i]['name']
+        lista_nomes.append(nome)
+        i += 1
+
+    return lista_nomes
+
+
+def run_container_name(lista_nomes):
+    for nome in lista_nomes:
+        padronizando_nome = nome.lower().replace(" ", "_")
+        print("Criando container com nome: ", padronizando_nome)
+        client.containers.run('nginx', name=padronizando_nome, detach=True)
+
+
+run_container_name(nome_astronautas())
+
+
+
+# Executando
+'''
 subparser = parser.add_subparsers()
 
 # Containers: Run container
@@ -87,3 +130,6 @@ lista.set_defaults(func=list_container)
 # Realiza o tratamento dos arqumentos
 cmd = parser.parse_args()
 cmd.func(cmd)
+'''
+
+
