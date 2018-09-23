@@ -101,35 +101,28 @@ def nome_astronautas():
     return lista_nomes
 
 
-def run_container_name(lista_nomes):
+def run_container_name(args):
+    lista_nomes = nome_astronautas()
+
     for nome in lista_nomes:
         padronizando_nome = nome.lower().replace(" ", "_")
         print("Criando container com nome: ", padronizando_nome)
-        client.containers.run('nginx', name=padronizando_nome, detach=True)
-
-
-run_container_name(nome_astronautas())
-
+        client.containers.run(str(args.img), name=padronizando_nome, detach=True)
 
 
 # Executando
-'''
+
+#run_container_name("nginx")
+
+
 subparser = parser.add_subparsers()
 
 # Containers: Run container
 cria_container = subparser.add_parser('containers')
 cria_container.add_argument('--image', required=True, help='Informe o nome da image!')
-cria_container.add_argument('--comando', required=True, help='Informe qual comando será executa detro no container.')
-cria_container.set_defaults(func=run_container)
-
-# List: lista containers
-lista = subparser.add_parser('list')
-lista.add_argument('--list', help='Lista todos containers')
-lista.set_defaults(func=list_container)
+#cria_container.add_argument('--comando', required=True, help='Informe qual comando será executa detro no container.')
+cria_container.set_defaults(func=run_container_name)
 
 # Realiza o tratamento dos arqumentos
 cmd = parser.parse_args()
 cmd.func(cmd)
-'''
-
-
