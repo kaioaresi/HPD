@@ -105,9 +105,13 @@ def run_container_name(args):
     lista_nomes = nome_astronautas()
 
     for nome in lista_nomes:
-        padronizando_nome = nome.lower().replace(" ", "_")
-        print("Criando container com nome: ", padronizando_nome)
-        client.containers.run(str(args.img), name=padronizando_nome, detach=True)
+        try:
+            padronizando_nome = nome.lower().replace(" ", "_")
+            print("Criando container com nome: ", padronizando_nome)
+            client.containers.run(str(args.img), name=padronizando_nome, detach=True)
+        except docker.errors.ImageNotFound as e:
+            print('Essa image não existe ou não está publica!')
+            logs("Essa image não existe!", e)
 
 
 # Executando
