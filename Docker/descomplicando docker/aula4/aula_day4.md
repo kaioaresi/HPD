@@ -75,11 +75,31 @@ service:
     ports:
       - 80:80
 ```
-3.2
 
+## Exemplo utilização no `docker-compose`
 
+> https://training.play-with-docker.com/swarm-compose-secrets/
 
+```
+version: '3.3'
 
+secrets:
+  teste_secret:
+    external: true
+
+services:
+  teste_secret:
+    image: nginx    
+    secrets:
+      - teste_secret
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.role != manager
+      restart_policy:
+        condition: on-failure
+```
 
 
 
